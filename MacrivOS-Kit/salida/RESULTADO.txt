@@ -1,0 +1,8 @@
+Este archivo marca la carpeta "salida".
+Al terminar la construccion encontrara aqui:
+
+  - MacrivOS.iso        el entorno arrancable (3,50 GB)
+  - Informe-Peso.txt    desglose del peso por componente
+  - GRABAR-USB.txt      como pasar el ISO al USB
+  - registro.txt        registro de toda la construccion
+  - oscdimg.log         registro del empaquetado final

@@ -1,0 +1,131 @@
+<html>
+<head>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>MacrivOS 1.0 - Escritorio del investigador</title>
+<hta:application id="oMacrivOS" applicationname="MacrivOS" scroll="no"
+    singleinstance="yes" windowstate="maximize" navigable="no" border="thick"/>
+<style>
+  body { margin:0; padding:0; background:#0d1b2a; color:#e8f0f8;
+         font-family:"Segoe UI", Arial, sans-serif; overflow:hidden; }
+  .cabecera { padding:26px 40px 10px 40px; }
+  .marca { font-size:34px; font-weight:700; letter-spacing:1px; color:#e8f0f8; }
+  .marca span { color:#4da8da; }
+  .sub { font-size:14px; color:#7a9bb8; margin-top:4px; }
+  .linea { height:3px; width:220px; background:#4da8da; margin-top:12px; }
+  .zona { padding:18px 40px; text-align:center; }
+  .btn { display:inline-block; vertical-align:top; width:250px; height:118px;
+         margin:9px; padding:14px 16px; box-sizing:border-box;
+         background:#16283c; border:1px solid #2d7ab3; cursor:pointer; }
+  .btn:hover { background:#1e3a55; border-color:#4da8da; }
+  .btn .ico { font-size:26px; color:#4da8da; font-weight:700; }
+  .btn .tit { font-size:17px; font-weight:600; margin-top:8px; }
+  .btn .des { font-size:12px; color:#7a9bb8; margin-top:5px; line-height:1.3; }
+  .pie { position:absolute; bottom:0; left:0; right:0; padding:14px 40px;
+         background:#0a1628; border-top:1px solid #1e3a55; font-size:13px; color:#7a9bb8; }
+  .pie b { color:#e8f0f8; font-weight:600; }
+  #error { color:#e0a950; }
+</style>
+<script language="javascript">
+  var oShell = new ActiveXObject("WScript.Shell");
+  var oFSO   = new ActiveXObject("Scripting.FileSystemObject");
+
+  // Letra de la unidad USB donde vive MacrivOS (el HTA se abre desde ahi)
+  var ruta = decodeURIComponent(location.pathname);   // p.ej. "/D:/MacrivOS/inicio.hta"
+  var letra = ruta.charAt(1);
+  var unidad = letra + ":";
+  var raiz = unidad + "\\MacrivOS";
+
+  function existe(rutaArchivo) {
+    return oFSO.FileExists(rutaArchivo) || oFSO.FolderExists(rutaArchivo);
+  }
+
+  function lanzar(rutaRelativa, nombre) {
+    var destino = raiz + rutaRelativa;
+    if (!existe(destino)) {
+      document.getElementById("error").innerHTML =
+        "No se encontro " + nombre + " en " + destino +
+        ". Si cambio el nombre de la carpeta Apps, revise LICENCIAS.txt.";
+      return;
+    }
+    oShell.Run('"' + destino + '"', 1, false);
+  }
+
+  function abrirCarpeta(rutaRelativa) {
+    oShell.Run('explorer.exe "' + raiz + rutaRelativa + '"', 1, false);
+  }
+
+  function abrirConsola() { oShell.Run("cmd.exe", 1, false); }
+  function salir()        { window.close(); }
+
+  window.onload = function () {
+    document.getElementById("unidadTxt").innerHTML = unidad;
+    document.getElementById("rutaTrabajo").innerHTML =
+      unidad + "\\MacrivOS\\Datos\\Trabajo";
+  };
+</script>
+</head>
+<body>
+
+  <div class="cabecera">
+    <div class="marca">Macri<span>vOS</span></div>
+    <div class="sub">Entorno de investigaci&oacute;n &middot; escribir, citar y guardar desde el USB</div>
+    <div class="linea"></div>
+  </div>
+
+  <div class="zona">
+    <div class="btn" onclick="lanzar('\\Apps\\LibreOfficePortable\\LibreOfficePortable.exe','LibreOffice')">
+      <div class="ico">&#9998;</div>
+      <div class="tit">Escribir con Writer</div>
+      <div class="des">Editor de textos: abre y guarda .docx de Word</div>
+    </div>
+    <div class="btn" onclick="lanzar('\\Apps\\Zotero\\zotero.exe','Zotero')">
+      <div class="ico">&#128218;</div>
+      <div class="tit">Referencias (Zotero)</div>
+      <div class="des">Gestor de bibliograf&iacute;a y citas APA 7</div>
+    </div>
+    <div class="btn" onclick="abrirCarpeta('\\Plantillas')">
+      <div class="ico">&#128193;</div>
+      <div class="tit">Plantillas APA 7</div>
+      <div class="des">Art&iacute;culo, tesis y matriz de consistencia</div>
+    </div>
+    <div class="btn" onclick="abrirCarpeta('\\Biblioteca')">
+      <div class="ico">&#128214;</div>
+      <div class="tit">Biblioteca</div>
+      <div class="des">Gu&iacute;as r&aacute;pidas de APA 7 y Zotero</div>
+    </div>
+    <div class="btn" onclick="lanzar('\\Apps\\Sumatra\\SumatraPDF.exe','SumatraPDF')">
+      <div class="ico">&#128196;</div>
+      <div class="tit">Leer PDF</div>
+      <div class="des">Lector ligero para art&iacute;culos y cap&iacute;tulos</div>
+    </div>
+    <div class="btn" onclick="lanzar('\\Apps\\Notepad++\\notepad++.exe','Notepad++')">
+      <div class="ico">&#128221;</div>
+      <div class="tit">Notas r&aacute;pidas</div>
+      <div class="des">Bloc avanzado para notas y datos</div>
+    </div>
+    <div class="btn" onclick="abrirCarpeta('\\Datos\\Trabajo')">
+      <div class="ico">&#128190;</div>
+      <div class="tit">Guardar trabajo</div>
+      <div class="des">Carpeta en el USB que sobrevive al apagar</div>
+    </div>
+    <div class="btn" onclick="abrirConsola()">
+      <div class="ico">&gt;_</div>
+      <div class="tit">Consola</div>
+      <div class="des">Herramientas de sistema y recuperaci&oacute;n</div>
+    </div>
+    <div class="btn" onclick="salir()">
+      <div class="ico">&#10005;</div>
+      <div class="tit">Salir</div>
+      <div class="des">Cierra el escritorio (deja la consola)</div>
+    </div>
+  </div>
+
+  <div class="pie">
+    <div>Unidad de MacrivOS: <b id="unidadTxt">?</b> &nbsp;&middot;&nbsp;
+         Guarde siempre en <b id="rutaTrabajo">?</b></div>
+    <div id="error"></div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+============================================================
+  LICENCIAS Y AVISOS DE MACRIVOS 1.0
+============================================================
+
+POR QUE NO INCLUYE OFFICE 2016
+------------------------------
+Office 2016 no puede incluirse por dos razones: (1) la licencia de
+Microsoft prohibe redistribuir el software en medios de terceros y
+requiere activacion por usuario; (2) Office no funciona de forma
+practica dentro de un entorno WinPE, que carece de los servicios
+completos de Windows. MacrivOS usa LibreOffice, suite libre que
+abre y guarda los formatos .docx, .xlsx y .pptx de Office.
+
+COMPONENTES Y SUS LICENCIAS (todas de codigo abierto)
+-----------------------------------------------------
+- Windows PE (nucleo del entorno)
+  Distribuido y usado segun los terminos del kit de evaluacion y
+  despliegue de Windows (Windows ADK) de Microsoft. Esta previsto
+  para mantenimiento, recuperacion y despliegue de equipos.
+  https://learn.microsoft.com/windows-hardware/manufacture/desktop/winpe-intro
+
+- LibreOffice Portable 26.2.4 (Mozilla Public License 2.0)
+  https://www.libreoffice.org / https://portableapps.com
+
+- Zotero 10 (GNU Affero GPL 3.0)
+  https://www.zotero.org
+
+- Notepad++ (GNU GPL)
+  https://notepad-plus-plus.org
+
+- SumatraPDF (GNU GPL v3)
+  https://www.sumatrapdfreader.org
+
+- 7-Zip (GNU LGPL y otras licencias abiertas; ver 7-zip.org)
+  https://www.7-zip.org
+
+- Better BibTeX (licencia abierta publicada en su repositorio)
+  https://retorquere.github.io/better-bibtex/
+
+- Plantillas APA 7, guias y escritorio de MacrivOS:
+  material propio de este kit, libre para uso personal o educativo.
+
+FIRMWARE DEL CHROMEBOOK (si es su destino)
+------------------------------------------
+El firmware UEFI Full ROM de MrChromebox (https://mrchromebox.tech)
+es un proyecto independiente; su instalacion es bajo su propia
+responsabilidad. Guarde SIEMPRE la copia de la ROM original que el
+script ofrece antes de flashear.
+
+USO DEL ISO RESULTANTE
+----------------------
+El ISO que produce este kit es para uso personal de quien lo
+construye. Si decide compartirlo, respete las licencias anteriores
+y los terminos del Windows ADK: no debe distribuirse como producto
+comercial ni presentarse como Windows.

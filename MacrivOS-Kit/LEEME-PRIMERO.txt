@@ -1,0 +1,59 @@
+============================================================
+  MacrivOS 1.0 - Kit de construccion del ISO
+  Entorno de investigacion tipo WinPE (espanol, x64, 3,50 GB)
+============================================================
+
+QUE ES ESTO
+-----------
+Este kit no es el ISO: es la fabrica del ISO. Al ejecutarlo en un
+PC con Windows 10/11 (64 bits) y el Windows ADK instalado, genera
+en 20-30 minutos el archivo MacrivOS.iso: un entorno arrancable
+tipo WinPE con escritorio de investigador, LibreOffice (Office
+libre), Zotero, plantillas APA 7 y utilidades, en espanol.
+
+REQUISITOS DEL PC DE CONSTRUCCION
+---------------------------------
+- Windows 10 o 11, 64 bits, con permisos de administrador.
+- Windows ADK + complemento "Windows PE" instalados
+  (seccion 4 de la Guia-MacrivOS.pdf; descarga gratuita de
+  Microsoft: https://learn.microsoft.com/windows-hardware/).
+- 15 GB de espacio libre en C: y conexion a Internet.
+- Ruta de esta carpeta SIN espacios (ej. C:\MacrivOS-Kit).
+
+COMO CONSTRUIR
+--------------
+1. Doble clic en CONSTRUIR.cmd y conceda permisos de administrador.
+2. Espere los 7 pasos (20-30 min en total).
+3. El ISO queda en la carpeta salida\MacrivOS.iso y el informe
+   de peso en salida\Informe-Peso.txt.
+
+POR QUE LA ARQUITECTURA ES x64 Y NO x86
+---------------------------------------
+El destino principal es el Chromebook 3 (placa Celes). Su firmware
+UEFI Full ROM de MrChromebox es de 64 bits exclusivo: el FAQ oficial
+dice "The UEFI Full ROM firmware only supports 64-bit OSes" y
+"32-bit anything will not work". Por eso el nucleo se construye en
+amd64. Si necesita una variante x86 para un PC viejo con BIOS
+clasica, cambie $Arquitectura en config\variables.ps1: Zotero no
+estara disponible (no hay compilacion de 32 bits) y se usara
+LibreOffice 25.8.5 (ultima con 32 bits).
+
+CARPETA Drivers
+---------------
+Si piensa usar MacrivOS en otros equipos, copie archivos .inf de
+drivers (red, grafica) en una carpeta llamada Drivers junto a
+CONSTRUIR.cmd antes de construir: el paso 3 los integra al nucleo.
+Para el Chromebook 3 no son necesarios.
+
+MAS INFORMACION
+---------------
+La Guia-MacrivOS.pdf que acompana este kit explica todo el proceso
+paso a paso, la grabacion del USB y la preparacion del Chromebook.
+
+LICENCIA DEL KIT
+----------------
+Los scripts de este kit se entregan como material libre para uso
+personal. Cada aplicacion incluida conserva su propia licencia
+(ver extras\licencias\avisos.txt). Microsoft Windows PE se rige
+por los terminos del Windows ADK: su uso es para mantenimiento,
+recuperacion y despliegue de equipos.
