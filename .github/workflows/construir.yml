@@ -1,0 +1,83 @@
+name: Construir MacrivOS.iso
+
+on:
+  workflow_dispatch:
+
+jobs:
+  construir:
+    runs-on: windows-latest
+    timeout-minutes: 100
+
+    steps:
+      - name: Descargar el paquete del repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar Windows ADK y complemento WinPE (servidores de Microsoft)
+        shell: powershell
+        run: choco install windows-adk windows-adk-winpe -y
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verificar herramientas del ADK
+        shell: powershell
+        run: |
+          $adk = Join-Path ${env:ProgramFiles(x86)} 'Windows Kits\10\Assessment and Deployment Kit'
+          $rutas = @(
+            Join-Path $adk 'Windows Preinstallation Environment\copype\amd64\copype.cmd',
+            Join-Path $adk 'Oscdimg\oscdimg.exe',
+            Join-Path $adk 'Windows Preinstallation Environment\amd64\WinPE_OCs'
+          )
+          $falta = $rutas | Where-Object { -not (Test-Path $_) }
+          if ($falta) { $falta | ForEach-Object { Write-Host "FALTA: $_" }; exit 1 }
+          Write-Host 'ADK completo: copype, oscdimg y WinPE_OCs estan presentes.'
+
+      - name: Paso 1 - Verificacion del entorno
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File "MacrivOS-Kit\pasos\paso1-verificar-entorno.ps1"; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Paso 2 - Descarga de aplicaciones libres
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File "MacrivOS-Kit\pasos\paso2-descargar-aplicaciones.ps1"; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Paso 3 - Nucleo WinPE en espanol
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File "MacrivOS-Kit\pasos\paso3-construir-winpe.ps1"; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Paso 4 - Instalacion de aplicaciones en el medio
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File "MacrivOS-Kit\pasos\paso4-instalar-aplicaciones.ps1"; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Paso 5 - Escritorio del investigador y contenido
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File "MacrivOS-Kit\pasos\paso5-contenido-investigador.ps1"; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Paso 6 - Ajuste al peso objetivo de 3,50 GB
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File "MacrivOS-Kit\pasos\paso6-ajustar-peso.ps1"; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Paso 7 - Generacion del ISO
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File "MacrivOS-Kit\pasos\paso7-generar-iso.ps1"; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Informe de peso en el resumen del trabajo
+        if: always()
+        shell: powershell
+        run: |
+          if (Test-Path 'MacrivOS-Kit\salida\Informe-Peso.txt') {
+            Get-Content 'MacrivOS-Kit\salida\Informe-Peso.txt' | Add-Content $env:GITHUB_STEP_SUMMARY
+            Write-Host 'Informe agregado al resumen.'
+          }
+
+      - name: Publicar MacrivOS.iso como artefacto descargable
+        uses: actions/upload-artifact@v4
+        with:
+          name: MacrivOS-ISO
+          path: |
+            MacrivOS-Kit/salida/MacrivOS.iso
+            MacrivOS-Kit/salida/Informe-Peso.txt
+            MacrivOS-Kit/salida/GRABAR-USB.txt
+            MacrivOS-Kit/salida/registro.txt
+          if-no-files-found: error
+          retention-days: 30
